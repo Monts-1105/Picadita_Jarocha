@@ -1,0 +1,92 @@
+DROP TABLE IF EXISTS Proveedor;
+CREATE TABLE Proveedor (
+   proveedor_id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   nombre_proveedor VARCHAR(30) NOT NULL,
+   telefono VARCHAR(15),
+   correo VARCHAR(60),
+   direccion VARCHAR(60)
+);
+
+INSERT INTO Proveedor (nombre_proveedor, telefono, correo, direccion) VALUES
+('Distribuidora MaízMex', '5551234567', 'contacto@maizmex.com', 'Av. Reforma 123, CDMX'),
+('Lácteos del Norte', '8119876543', 'ventas@lacteosnorte.com', 'Calle Hidalgo 45, Monterrey, NL'),
+('Carnes Premium', '4447654321', 'info@carnespremium.com', 'Boulevard Central 89, San Luis Potosí, SLP'),
+('Frutas y Verduras S.A.', '3338765432', 'frutas@verduras.com', 'Av. Juárez 321, Guadalajara, JAL'),
+('Panadería Tradición', '2221239876', 'contacto@pantradicion.com', 'Calle 16 de Septiembre 56, Puebla, PUE'),
+('Café Veracruzano', '2296543210', 'info@cafeveracruz.com', 'Camino Real 120, Xalapa, VER'),
+('Chiles Selectos', '7779876123', 'ventas@chileselectos.com', 'Calle Independencia 34, Cuernavaca, MOR'),
+('Molinos del Sur', '9612345678', 'contacto@molinosdelsur.com', 'Av. Central 78, Tuxtla Gutiérrez, CHP'),
+('Quesos y Crema S.A.', '6647654321', 'info@quesosycrema.com', 'Boulevard Agua Caliente 56, Tijuana, BC'),
+('Bebidas Frescas', '4623456789', 'ventas@bebidasfrescas.com', 'Calle Primavera 98, León, GTO'),
+('Masa Maíz Co.', '5557654321', 'info@masamaizco.com', 'Calle Central 44, CDMX'),
+('La Manteca S.A.', '9981234567', 'ventas@lamanteca.com', 'Calle Sur 12, Cancún, QR'),
+('Jitomates de Oro', '3512345678', 'contacto@jitomatesoro.com', 'Calle Libertad 89, Morelia, MICH'),
+('Chiles Especiales', '4779876543', 'info@chilesespeciales.com', 'Calle Hidalgo 12, León, GTO'),
+('Tomatillos Frescos', '9618765432', 'ventas@tomatillosfrescos.com', 'Av. Insurgentes 22, Tuxtla Gutiérrez, CHP'),
+('Ajos del Valle', '3337654321', 'contacto@ajosvalle.com', 'Calle Primavera 54, Guadalajara, JAL'),
+('Cebollas San Juan', '8112345678', 'info@cebollassanjuan.com', 'Calle Revolución 78, Monterrey, NL'),
+('Cilantro Express', '2299876543', 'ventas@cilantroexpress.com', 'Calle Real 56, Veracruz, VER'),
+('Quesos Frescos MX', '6623456789', 'info@quesosfrescosmx.com', 'Calle Colón 67, Hermosillo, SON'),
+('Cremerías Unidas', '7717654321', 'contacto@cremeriasunidas.com', 'Boulevard Reforma 89, Pachuca, HGO'),
+('Frijoles Premium', '7228765432', 'info@frijolespremium.com', 'Av. Central 45, Toluca, MEX'),
+('Molés Tradicionales', '5559876543', 'ventas@molestradicionales.com', 'Calle Juárez 67, CDMX'),
+('Nopales Selectos', '9617654321', 'info@nopalesselectos.com', 'Calle Reforma 12, Tuxtla Gutiérrez, CHP'),
+('Chicharrón del Norte', '8187654321', 'ventas@chicharronnorte.com', 'Av. Central 90, Monterrey, NL'),
+('Pollo Delicioso', '7771234567', 'ventas@pollodelicioso.com', 'Calle Flores 56, Cuernavaca, MOR'),
+('Cochinita Pibil Express', '9997654321', 'contacto@cochinitapibil.com', 'Av. Sol 45, Mérida, YUC'),
+('Longaniza Suprema', '4428765432', 'info@longanizasuprema.com', 'Calle Luna 78, Querétaro, QRO'),
+('Carne Asada Monterrey', '8186543210', 'ventas@carneasada.com', 'Av. Fundidora 89, Monterrey, NL'),
+('Cecinas del Centro', '7711239876', 'contacto@cecinascentro.com', 'Boulevard Hidalgo 12, Pachuca, HGO'),
+('Picadillo Gourmet', '3339876543', 'info@picadillogourmet.com', 'Calle Principal 67, Guadalajara, JAL'),
+('Tripas del Bajío', '4621237654', 'ventas@tripasbajio.com', 'Calle Insurgentes 23, León, GTO'),
+('Huevos del Campo', '2297654321', 'info@huevoscampo.com', 'Calle Verde 34, Veracruz, VER'),
+('Tortillas La Auténtica', '5551239876', 'contacto@tortillasautentica.com', 'Calle Centro 45, CDMX'),
+('Azúcar y Dulces', '9619876543', 'ventas@azucarydulces.com', 'Av. Dulce 12, Tuxtla Gutiérrez, CHP'),
+('Chocolate Fino MX', '4441234567', 'info@chocolatefinomx.com', 'Calle Morena 89, San Luis Potosí, SLP');
+
+
+
+
+DROP TABLE IF EXISTS Ingrediente;
+CREATE TABLE Ingrediente (
+    ingrediente_id INT AUTO_INCREMENT PRIMARY KEY
+    , nombre VARCHAR(100)
+);
+
+
+INSERT INTO Ingrediente (nombre) VALUES
+('Masa de maíz'),
+('Manteca'),
+('Jitomate'),
+('Chile'),
+('Tomatillo'),
+('Chipotle'),
+('Ajo'),
+('Cebolla'),
+('Cilantro'),
+('Queso fresco'),
+('Crema'),
+('Frijoles'),
+('Mole'),
+('Papa'),
+('Nopales'),
+('Chicharrón'),
+('Pollo'),
+('Cochinita'),
+('Longaniza'),
+('Carne asada'),
+('Cecina'),
+('Picadillo'),
+('Tripa'),
+('Huevo'),
+('Tortilla'),
+('Azúcar'),
+('Chocolate'),
+('Pan dulce'),
+('Frutas variadas'),
+('Leche'),
+('Café'),
+('Jugos naturales'),
+('Refresco');
+
+SELECT * FROM Proveedor;
