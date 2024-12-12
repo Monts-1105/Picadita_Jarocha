@@ -1,1 +1,257 @@
+-- Tabla para razones sociales
+DROP TABLE IF EXISTS RazonSocial;
+CREATE TABLE RazonSocial (razon_social_id INT AUTO_INCREMENT PRIMARY KEY, nombre VARCHAR(100), rfc_razon_social VARCHAR(13));
 
+
+CREATE TABLE Sucursal (sucursal_id INT AUTO_INCREMENT PRIMARY KEY, nombre_sucursal VARCHAR(50), ubicacion_sucursal VARCHAR(100), numero_telefonico_sucursal VARCHAR(10), razon_social_id INT
+    , CONSTRAINT fk_razon_social FOREIGN KEY (razon_social_id)
+    REFERENCES RazonSocial(razon_social_id) ON DELETE CASCADE
+);
+
+
+-- Tabla días de la semana
+DROP TABLE IF EXISTS DiaSemana;
+CREATE TABLE DiaSemana (
+    dia_id INT AUTO_INCREMENT PRIMARY KEY , nombre_dia VARCHAR(50)
+);
+
+
+-- Tabla de los horarios de sucursales
+DROP TABLE IF EXISTS SucursalHorario;
+CREATE TABLE SucursalHorario (sucursal_horario_id INT AUTO_INCREMENT PRIMARY KEY, dia_id INT, sucursal_id INT, hora_apertura VARCHAR(5), hora_cierre VARCHAR(5)
+    -- se añade la referencia al dia
+    , CONSTRAINT fk_dia FOREIGN KEY (dia_id) REFERENCES DiaSemana(dia_id) ON DELETE CASCADE
+    -- se añade la referencia a la sucursal
+    , CONSTRAINT fk_sucursal FOREIGN KEY (sucursal_id) REFERENCES Sucursal(sucursal_id) ON DELETE CASCADE
+);
+
+
+-- Tabla de mesas
+DROP TABLE IF EXISTS Mesa;
+CREATE TABLE Mesa (mesa_id INT AUTO_INCREMENT PRIMARY KEY, numero_mesa INT, total_personas INT, sucursal_id INT
+    , CONSTRAINT fk_mesa_sucursal FOREIGN KEY (sucursal_id)
+    REFERENCES Sucursal(sucursal_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS Submesa;
+CREATE TABLE SubMesa (
+    submesa_id INT AUTO_INCREMENT PRIMARY KEY, 
+    nombre_cliente VARCHAR(50), 
+    numero_personas INT, 
+    fecha DATETIME
+    , mesa_id INT
+    , CONSTRAINT fk_mesa FOREIGN KEY (mesa_id)
+    REFERENCES Mesa(mesa_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Orden;
+CREATE TABLE Orden (
+   orden_id INT AUTO_INCREMENT PRIMARY KEY,  
+   folio VARCHAR(5) NOT NULL,                             
+   tipo VARCHAR(10) NOT NULL,                             
+   forma_pago CHAR(10) NOT NULL,                          
+   fecha DATETIME NOT NULL,                               
+   entregado DECIMAL(10, 2) NOT NULL,                    
+   submesa_id INT,                                      
+    no_orden INT                                      
+   , CONSTRAINT fk_submesa FOREIGN KEY (submesa_id)
+    REFERENCES Submesa(submesa_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Caja;
+CREATE TABLE Caja (
+    caja_id INT AUTO_INCREMENT PRIMARY KEY,
+    saldo_caja DECIMAL(10, 2) DEFAULT 0
+);
+
+
+DROP TABLE IF EXISTS OrdenCaja;
+CREATE TABLE OrdenCaja (
+    orden_caja_id INT AUTO_INCREMENT PRIMARY KEY
+    , orden_id INT,
+    caja_id INT,
+    importe DECIMAL(10, 2),
+    CONSTRAINT fk_orden_orden_caja FOREIGN KEY (orden_id)
+    REFERENCES Orden(orden_id) ON DELETE CASCADE,
+    CONSTRAINT fk_caja_orden_caja FOREIGN KEY (caja_id)
+    REFERENCES Caja(caja_id) ON DELETE CASCADE 
+);
+
+DROP TABLE IF EXISTS Empleado;
+CREATE TABLE Empleado (
+    empleado_id INT AUTO_INCREMENT PRIMARY KEY
+    , apellido_paterno VARCHAR(100)
+    , apellido_materno VARCHAR(100)
+    , nombres VARCHAR(100)
+    , rfc VARCHAR(13)
+    , telefono VARCHAR(10)
+    , turno VARCHAR(50)
+    , salario DECIMAL(10, 2)
+    , curp VARCHAR(18)
+);
+
+
+DROP TABLE IF EXISTS Cajero;
+CREATE TABLE Cajero ( 
+    empleado_id INT PRIMARY KEY,
+    total_transacciones INT DEFAULT 0,
+    CONSTRAINT fk_empleado_cajero FOREIGN KEY (empleado_id)
+    REFERENCES Empleado(empleado_id) ON DELETE CASCADE    
+);
+
+
+DROP TABLE IF EXISTS CajeroCaja;
+CREATE TABLE CajeroCaja (
+    caja_id INT,
+    empleado_id INT,
+    PRIMARY KEY (caja_id, empleado_id),
+    CONSTRAINT fk_caja_cajero_caja FOREIGN KEY (caja_id)
+    REFERENCES Caja(caja_id) ON DELETE CASCADE,    
+    CONSTRAINT fk_empleado_cajero_caja FOREIGN KEY (empleado_id)
+    REFERENCES Cajero(empleado_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS Repartidor;
+CREATE TABLE Repartidor (
+    empleado_id INT PRIMARY KEY,
+    matricula_vehiculo VARCHAR(8),
+    no_licencia VARCHAR(12),
+    CONSTRAINT fk_empleado_repartidor FOREIGN KEY (empleado_id)
+    REFERENCES Empleado(empleado_id) ON DELETE CASCADE    
+);
+
+
+DROP TABLE IF EXISTS OrdenDomicilio;
+CREATE TABLE OrdenDomicilio (
+    orden_id INT AUTO_INCREMENT PRIMARY KEY,
+    direccion VARCHAR(100),
+    coste DECIMAL(10, 2),
+    empleado_id INT,
+    CONSTRAINT fk_orden FOREIGN KEY (orden_id)
+    REFERENCES Orden(orden_id) ON DELETE CASCADE,
+    CONSTRAINT fk_empleado FOREIGN KEY (empleado_id)
+    REFERENCES Repartidor(empleado_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Promocion;
+CREATE TABLE Promocion (
+    promocion_id INT AUTO_INCREMENT PRIMARY KEY
+    , nombre VARCHAR(200)
+    , descripcion VARCHAR(200)
+    , condicion VARCHAR(200)
+    , dia_aplicable VARCHAR(20)
+    , fecha_registro DATETIME DEFAULT CURRENT_DATE
+    , fecha_inicio DATETIME DEFAULT CURRENT_DATE
+    , fecha_fin DATETIME DEFAULT NULL
+    , promocion_activa BOOLEAN DEFAULT TRUE
+);
+
+DROP TABLE IF EXISTS Categoria;
+CREATE TABLE Categoria (
+   categoria_id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   nombre_categoria VARCHAR(30) NOT NULL);
+
+
+DROP TABLE IF EXISTS Producto; 
+CREATE TABLE Producto (
+   producto_id INT(5) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   precio_unitario DECIMAL(10,2) NOT NULL,
+   nombre_producto VARCHAR(50) NOT NULL,
+   categoria_id INT, promocion_id INT
+   ,  CONSTRAINT fk_categoria FOREIGN KEY(categoria_id)
+    REFERENCES Categoria(categoria_id) ON DELETE CASCADE
+   ,  CONSTRAINT fk_promocion FOREIGN KEY(promocion_id)
+    REFERENCES Promocion(promocion_id) ON DELETE CASCADE
+
+);
+
+
+DROP TABLE IF EXISTS Ingrediente;
+CREATE TABLE Ingrediente (
+    ingrediente_id INT AUTO_INCREMENT PRIMARY KEY
+    , nombre VARCHAR(100)
+);
+
+
+DROP TABLE IF EXISTS ProductoIngrediente;
+CREATE TABLE ProductoIngrediente (
+    producto_id INT
+    , ingrediente_id INT
+    , PRIMARY KEY(producto_id, ingrediente_id)
+    , CONSTRAINT fk_producto_ingrediente_producto FOREIGN KEY(producto_id)
+    REFERENCES Producto(producto_id) ON DELETE CASCADE
+    , CONSTRAINT fk_producto_ingrediente_ingrediente FOREIGN KEY(ingrediente_id)
+    REFERENCES Ingrediente(ingrediente_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS DetalleOrden;
+CREATE TABLE DetalleOrden (
+    detalle_orden_id INT AUTO_INCREMENT PRIMARY KEY
+    , orden_id INT
+    , producto_id INT
+    , CONSTRAINT fk_detalle_orden_orden FOREIGN KEY(orden_id)
+    REFERENCES Orden(orden_id) ON DELETE CASCADE
+    , CONSTRAINT fk_detalle_orden_producto FOREIGN KEY(producto_id)
+    REFERENCES Producto(producto_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS DetalleOrdenPromocion;
+CREATE TABLE DetalleOrdenPromocion  (
+    detalle_orden_id INT
+    , promocion_id INT,
+    PRIMARY KEY(detalle_orden_id, promocion_id)
+     , CONSTRAINT fk_detalle_orden_promocion_orden FOREIGN KEY(detalle_orden_id)
+    REFERENCES DetalleOrden(detalle_orden_id) ON DELETE CASCADE
+    , CONSTRAINT fk_detalle_orden_promocion_promocion FOREIGN KEY(promocion_id)
+    REFERENCES Promocion(promocion_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Factura;
+CREATE TABLE Factura (
+    factura_id INT AUTO_INCREMENT PRIMARY KEY
+    , uso_cfdi VARCHAR(100)
+    , rfc VARCHAR(13)
+    , regimen_fiscal VARCHAR(6)
+    , domicilio_fiscal VARCHAR(60)
+    , referencia VARCHAR(20)
+    , nombre_sat VARCHAR(60)
+    , folio_fiscal VARCHAR(16)
+    , orden_id INT UNIQUE
+    , CONSTRAINT fk_factura_orden FOREIGN KEY (orden_id)
+    REFERENCES Orden(orden_id) ON DELETE CASCADE
+);
+
+
+DROP TABLE IF EXISTS Transaccion;
+CREATE TABLE Transaccion (
+    transaccion_id INT AUTO_INCREMENT PRIMARY KEY
+    , cantidad DECIMAL(10, 2)
+    , orden_id INT
+    , CONSTRAINT fk_transaccion_orden FOREIGN KEY (orden_id)
+    REFERENCES Orden(orden_id) ON DELETE CASCADE
+);
+
+DROP TABLE IF EXISTS Monedero;
+CREATE TABLE Monedero (
+    monedero_id INT AUTO_INCREMENT PRIMARY KEY
+    , fecha_registro DATETIME DEFAULT CURRENT_DATE
+    , nombre_cliente VARCHAR(100)
+    , apellido_paterno_cliente VARCHAR(100)
+    , apellido_materno_cliente VARCHAR(100)
+    , fecha_nacimiento_cliente DATETIME
+    , saldo_inicial INT
+);
+
+DROP TABLE IF EXISTS TransaccionMonedero;
+CREATE TABLE TransaccionMonedero (
+    transaccion_id INT
+    , monedero_id INT
+    , CONSTRAINT fk_transaccion FOREIGN KEY (transaccion_id)
+    REFERENCES Transaccion(transaccion_id) ON DELETE CASCADE
+    , CONSTRAINT fk_monedero FOREIGN KEY (monedero_id)
+    REFERENCES Monedero(monedero_id) ON DELETE CASCADE
+);
